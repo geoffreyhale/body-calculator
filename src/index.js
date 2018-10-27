@@ -4,6 +4,7 @@ import ReactDOM from "react-dom";
 import "./styles.css";
 
 const INCHES_PER_FOOT = 12;
+const CENTIMETERS_PER_INCH = 2.54;
 
 const isNumber = x => !isNaN(x);
 
@@ -16,7 +17,7 @@ class App extends React.Component {
   }
 
   getHeightInches() {
-    return this.state.heightInches;
+    return Math.round(this.state.heightInches);
   }
 
   getHeightFeetPart() {
@@ -24,7 +25,11 @@ class App extends React.Component {
   }
 
   getHeightInchesPart() {
-    return this.state.heightInches % INCHES_PER_FOOT;
+    return Math.round(this.state.heightInches % INCHES_PER_FOOT);
+  }
+
+  getHeightCentimeters() {
+    return Math.round(this.state.heightInches * CENTIMETERS_PER_INCH);
   }
 
   setHeightInches(inches) {
@@ -50,6 +55,12 @@ class App extends React.Component {
     });
   }
 
+  setHeightByCentimeters(centimeters) {
+    this.setState({
+      heightInches: centimeters / CENTIMETERS_PER_INCH
+    });
+  }
+
   handleChangeHeightInches(e) {
     const inches = e.target.value;
     if (isNumber(inches)) {
@@ -71,40 +82,65 @@ class App extends React.Component {
     }
   }
 
+  handleChangeHeightCentimeters(e) {
+    const centimeters = e.target.value;
+    if (isNumber(centimeters)) {
+      this.setHeightByCentimeters(+centimeters);
+    }
+  }
+
   render() {
     return (
       <div className="App">
         <h1>Body Calculator</h1>
         <h2>Height</h2>
-        <div>
-          <input
-            value={this.getHeightInches()}
-            onChange={e => {
-              this.handleChangeHeightInches(e);
-            }}
-            size={5}
-          />
-          <span> inches</span>
-        </div>
-        <br />
-        <div>
-          <input
-            value={this.getHeightFeetPart()}
-            onChange={e => {
-              this.handleChangeHeightFeetPart(e);
-            }}
-            size={5}
-          />
-          <span>'</span>
-          <input
-            value={this.getHeightInchesPart()}
-            onChange={e => {
-              this.handleChangeHeightInchesPart(e);
-            }}
-            size={5}
-          />
-          <span>"</span>
-        </div>
+        <table style={{ display: "inline-table" }}>
+          <tbody>
+            <tr>
+              <td>
+                <input
+                  value={this.getHeightInches()}
+                  onChange={e => {
+                    this.handleChangeHeightInches(e);
+                  }}
+                  size={5}
+                />
+                <span> inches</span>
+              </td>
+              <td>
+                <input
+                  value={this.getHeightCentimeters()}
+                  onChange={e => {
+                    this.handleChangeHeightCentimeters(e);
+                  }}
+                  size={7}
+                />
+                <span> cm</span>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <input
+                  value={this.getHeightFeetPart()}
+                  onChange={e => {
+                    this.handleChangeHeightFeetPart(e);
+                  }}
+                  size={3}
+                />
+                <span>' </span>
+                <input
+                  value={this.getHeightInchesPart()}
+                  onChange={e => {
+                    this.handleChangeHeightInchesPart(e);
+                  }}
+                  size={5}
+                />
+                <span>"</span>
+              </td>
+              <td />
+            </tr>
+          </tbody>
+        </table>
       </div>
     );
   }
