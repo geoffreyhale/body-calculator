@@ -67,6 +67,16 @@ class App extends React.Component {
   }
 
   setRound(isRound) {
+    // for preferred user experience
+    // before exiting rounding, round inches
+    // when exiting rounding, inches stay same, centimeters may reveal decimal part, not vice versa
+    // effectively, inches appear to be the stable source of truth
+    if (!isRound) {
+      this.setState({
+        heightInches: Math.round(this.state.heightInches)
+      });
+    }
+
     this.setState({
       round: isRound
     });
