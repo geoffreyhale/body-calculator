@@ -12,24 +12,29 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      heightInches: 0
+      heightInches: 0,
+      round: true
     };
   }
 
   getHeightInches() {
-    return Math.round(this.state.heightInches);
+    const inches = this.state.heightInches;
+    return this.state.round ? Math.round(inches) : inches;
   }
 
   getHeightFeetPart() {
-    return Math.floor(this.state.heightInches / INCHES_PER_FOOT);
+    const feetPart = Math.floor(this.state.heightInches / INCHES_PER_FOOT);
+    return feetPart;
   }
 
   getHeightInchesPart() {
-    return Math.round(this.state.heightInches % INCHES_PER_FOOT);
+    const inchesPart = this.state.heightInches % INCHES_PER_FOOT;
+    return this.state.round ? Math.round(inchesPart) : inchesPart;
   }
 
   getHeightCentimeters() {
-    return Math.round(this.state.heightInches * CENTIMETERS_PER_INCH);
+    const centimeters = this.state.heightInches * CENTIMETERS_PER_INCH;
+    return this.state.round ? Math.round(centimeters) : centimeters;
   }
 
   setHeightInches(inches) {
@@ -61,6 +66,12 @@ class App extends React.Component {
     });
   }
 
+  setRound(isRound) {
+    this.setState({
+      round: isRound
+    });
+  }
+
   handleChangeHeightInches(e) {
     const inches = e.target.value;
     if (isNumber(inches)) {
@@ -89,11 +100,22 @@ class App extends React.Component {
     }
   }
 
+  handleChangeRound(e) {
+    const isChecked = e.target.checked;
+    this.setRound(isChecked);
+  }
+
   render() {
     return (
       <div className="App">
         <h1>Body Calculator</h1>
         <h2>Height</h2>
+        <input
+          type="checkbox"
+          checked={this.state.round}
+          onChange={e => this.handleChangeRound(e)}
+        />{" "}
+        Round
         <table style={{ display: "inline-table" }}>
           <tbody>
             <tr>
