@@ -8,7 +8,7 @@ const CENTIMETERS_PER_INCH = 2.54;
 
 const isNumber = x => !isNaN(x);
 
-class App extends React.Component {
+class BodyCalculator extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -178,6 +178,10 @@ class App extends React.Component {
       </div>
     );
   }
+}
+
+function App() {
+  return <BodyCalculator />;
 }
 
 const rootElement = document.getElementById("root");
