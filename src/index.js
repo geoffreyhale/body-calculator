@@ -8,24 +8,30 @@ const CENTIMETERS_PER_INCH = 2.54;
 
 const isNumber = x => !isNaN(x);
 
-class Provider extends React.Component {
-  render() {
-    return this.props.children;
-  }
-}
-
-class BodyCalculator extends React.Component {
+class StoreProvider extends React.Component {
   constructor() {
     super();
+
     this.state = {
       heightInches: 0,
-      round: true
+      isRounding: true
     };
+
+    this.getIsRounding = this.getIsRounding.bind(this);
+    this.getHeightInches = this.getHeightInches.bind(this);
+    this.getHeightFeetPart = this.getHeightFeetPart.bind(this);
+    this.getHeightInchesPart = this.getHeightInchesPart.bind(this);
+    this.getHeightCentimeters = this.getHeightCentimeters.bind(this);
+    this.setHeightInches = this.setHeightInches.bind(this);
+    this.setHeightByFeetPart = this.setHeightByFeetPart.bind(this);
+    this.setHeightByInchesPart = this.setHeightByInchesPart.bind(this);
+    this.setHeightByCentimeters = this.setHeightByCentimeters.bind(this);
+    this.setIsRounding = this.setIsRounding.bind(this);
   }
 
   getHeightInches() {
     const inches = this.state.heightInches;
-    return this.state.round ? Math.round(inches) : inches;
+    return this.state.isRounding ? Math.round(inches) : inches;
   }
 
   getHeightFeetPart() {
@@ -35,12 +41,16 @@ class BodyCalculator extends React.Component {
 
   getHeightInchesPart() {
     const inchesPart = this.state.heightInches % INCHES_PER_FOOT;
-    return this.state.round ? Math.round(inchesPart) : inchesPart;
+    return this.state.isRounding ? Math.round(inchesPart) : inchesPart;
   }
 
   getHeightCentimeters() {
     const centimeters = this.state.heightInches * CENTIMETERS_PER_INCH;
-    return this.state.round ? Math.round(centimeters) : centimeters;
+    return this.state.isRounding ? Math.round(centimeters) : centimeters;
+  }
+
+  getIsRounding() {
+    return this.state.isRounding;
   }
 
   setHeightInches(inches) {
@@ -72,56 +82,87 @@ class BodyCalculator extends React.Component {
     });
   }
 
-  setRound(isRound) {
+  setIsRounding(isRounding) {
     // for preferred user experience
     // before exiting rounding, round inches
     // when exiting rounding, inches stay same, centimeters may reveal decimal part, not vice versa
     // effectively, inches appear to be the stable source of truth
-    if (!isRound) {
+    if (!isRounding) {
       this.setState({
         heightInches: Math.round(this.state.heightInches)
       });
     }
 
     this.setState({
-      round: isRound
+      isRounding: isRounding
     });
   }
 
+  render() {
+    const { children } = this.props;
+
+    const childrenWithProps = React.Children.map(children, child =>
+      React.cloneElement(child, {
+        getHeightInches: this.getHeightInches,
+        getHeightFeetPart: this.getHeightFeetPart,
+        getHeightInchesPart: this.getHeightInchesPart,
+        getHeightCentimeters: this.getHeightCentimeters,
+        getIsRounding: this.getIsRounding,
+        setHeightInches: this.setHeightInches,
+        setHeightByFeetPart: this.setHeightByFeetPart,
+        setHeightByInchesPart: this.setHeightByInchesPart,
+        setHeightByCentimeters: this.setHeightByCentimeters,
+        setIsRounding: this.setIsRounding
+      })
+    );
+
+    return <div>{childrenWithProps}</div>;
+  }
+}
+
+class BodyCalculator extends React.Component {
   handleChangeHeightInches(e) {
     const inches = e.target.value;
     if (isNumber(inches)) {
-      this.setHeightInches(+inches);
+      this.props.setHeightInches(+inches);
     }
   }
 
   handleChangeHeightInchesPart(e) {
     const inchesPart = e.target.value;
     if (isNumber(inchesPart)) {
-      this.setHeightByInchesPart(+inchesPart);
+      this.props.setHeightByInchesPart(+inchesPart);
     }
   }
 
   handleChangeHeightFeetPart(e) {
     const feetPart = e.target.value;
     if (isNumber(feetPart)) {
-      this.setHeightByFeetPart(+feetPart);
+      this.props.setHeightByFeetPart(+feetPart);
     }
   }
 
   handleChangeHeightCentimeters(e) {
     const centimeters = e.target.value;
     if (isNumber(centimeters)) {
-      this.setHeightByCentimeters(+centimeters);
+      this.props.setHeightByCentimeters(+centimeters);
     }
   }
 
   handleChangeRound(e) {
     const isChecked = e.target.checked;
-    this.setRound(isChecked);
+    this.props.setIsRounding(isChecked);
   }
 
   render() {
+    const {
+      getIsRounding,
+      getHeightInches,
+      getHeightCentimeters,
+      getHeightFeetPart,
+      getHeightInchesPart
+    } = this.props;
+
     return (
       <div className="App">
         <h1>Body Calculator</h1>
@@ -129,7 +170,7 @@ class BodyCalculator extends React.Component {
         <div>
           <input
             type="checkbox"
-            checked={this.state.round}
+            checked={getIsRounding()}
             onChange={e => this.handleChangeRound(e)}
           />{" "}
           Round
@@ -139,7 +180,7 @@ class BodyCalculator extends React.Component {
             <tr>
               <td>
                 <input
-                  value={this.getHeightInches()}
+                  value={getHeightInches()}
                   onChange={e => {
                     this.handleChangeHeightInches(e);
                   }}
@@ -149,7 +190,7 @@ class BodyCalculator extends React.Component {
               </td>
               <td>
                 <input
-                  value={this.getHeightCentimeters()}
+                  value={getHeightCentimeters()}
                   onChange={e => {
                     this.handleChangeHeightCentimeters(e);
                   }}
@@ -161,7 +202,7 @@ class BodyCalculator extends React.Component {
             <tr>
               <td>
                 <input
-                  value={this.getHeightFeetPart()}
+                  value={getHeightFeetPart()}
                   onChange={e => {
                     this.handleChangeHeightFeetPart(e);
                   }}
@@ -169,7 +210,7 @@ class BodyCalculator extends React.Component {
                 />
                 <span>' </span>
                 <input
-                  value={this.getHeightInchesPart()}
+                  value={getHeightInchesPart()}
                   onChange={e => {
                     this.handleChangeHeightInchesPart(e);
                   }}
@@ -188,9 +229,9 @@ class BodyCalculator extends React.Component {
 
 function App() {
   return (
-    <Provider>
+    <StoreProvider>
       <BodyCalculator />
-    </Provider>
+    </StoreProvider>
   );
 }
 
