@@ -120,12 +120,14 @@ class App extends React.Component {
       <div className="App">
         <h1>Body Calculator</h1>
         <h2>Height</h2>
-        <input
-          type="checkbox"
-          checked={this.state.round}
-          onChange={e => this.handleChangeRound(e)}
-        />{" "}
-        Round
+        <div>
+          <input
+            type="checkbox"
+            checked={this.state.round}
+            onChange={e => this.handleChangeRound(e)}
+          />{" "}
+          Round
+        </div>
         <table style={{ display: "inline-table" }}>
           <tbody>
             <tr>
