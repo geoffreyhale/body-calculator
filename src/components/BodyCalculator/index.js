@@ -6,6 +6,22 @@ const CENTIMETERS_PER_METER = 100;
 const GRAMS_PER_POUND = 453.59237;
 const KILOGRAMS_PER_GRAM = 1000;
 
+const getWeightStatus = bmi => {
+  if (isNaN(bmi)) {
+    return null;
+  }
+
+  if (bmi < 18.5) {
+    return "Underweight";
+  } else if (bmi < 25.0) {
+    return "Normal or Healthy Weight";
+  } else if (bmi < 30.0) {
+    return "Overweight";
+  } else {
+    return "Obese";
+  }
+};
+
 export default class BodyCalculator extends React.Component {
   constructor() {
     super();
@@ -149,7 +165,8 @@ export default class BodyCalculator extends React.Component {
         setWeightByPounds: this.setWeightByPounds,
         getWeightKilograms: this.getWeightKilograms,
         setWeightByKilograms: this.setWeightByKilograms,
-        getBMI: this.getBMI
+        getBMI: this.getBMI,
+        getWeightStatus: () => getWeightStatus(this.getBMI())
       })
     );
 

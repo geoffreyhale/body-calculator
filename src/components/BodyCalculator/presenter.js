@@ -59,7 +59,8 @@ export default class BodyCalculatorPresenter extends React.Component {
       getHeightInchesPart,
       getWeightPounds,
       getWeightKilograms,
-      getBMI
+      getBMI,
+      getWeightStatus
     } = this.props;
 
     return (
@@ -156,15 +157,26 @@ export default class BodyCalculatorPresenter extends React.Component {
           Body Mass Index (BMI) is a person’s weight in kilograms divided by the
           square of height in meters.
         </p>
-        <input
-          value={getBMI()}
-          // onChange={e => {
-          //   this.handleChangeWeightKilograms(e);
-          // }}
-          disabled
-          size={5}
-        />
-        <span> kg/m^2</span>
+        <table style={{ display: "inline-table" }}>
+          <tbody>
+            <tr>
+              <td>
+                <input
+                  value={getBMI()}
+                  // onChange={e => {
+                  //   this.handleChangeBMI(e);
+                  // }}
+                  disabled
+                  size={5}
+                />
+                <span> kg/m^2</span>
+              </td>
+              <td>
+                <input value={getWeightStatus()} disabled size={25} />
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     );
   }
