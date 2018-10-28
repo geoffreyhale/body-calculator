@@ -2,6 +2,7 @@ import React from "react";
 
 const INCHES_PER_FOOT = 12;
 const CENTIMETERS_PER_INCH = 2.54;
+const CENTIMETERS_PER_METER = 100;
 const GRAMS_PER_POUND = 453.59237;
 const KILOGRAMS_PER_GRAM = 1000;
 
@@ -29,6 +30,7 @@ export default class BodyCalculator extends React.Component {
     this.setWeightByPounds = this.setWeightByPounds.bind(this);
     this.getWeightKilograms = this.getWeightKilograms.bind(this);
     this.setWeightByKilograms = this.setWeightByKilograms.bind(this);
+    this.getBMI = this.getBMI.bind(this);
   }
 
   getHeightInches() {
@@ -63,6 +65,12 @@ export default class BodyCalculator extends React.Component {
   getWeightKilograms() {
     const kilograms = this.state.weightGrams / KILOGRAMS_PER_GRAM;
     return this.state.isRounding ? Math.round(kilograms) : kilograms;
+  }
+
+  getBMI() {
+    const heightMeters = this.getHeightCentimeters() / CENTIMETERS_PER_METER;
+    const bmi = this.getWeightKilograms() / (heightMeters * heightMeters);
+    return this.state.isRounding ? Math.round(bmi) : bmi;
   }
 
   setHeightInches(inches) {
@@ -140,7 +148,8 @@ export default class BodyCalculator extends React.Component {
         getWeightPounds: this.getWeightPounds,
         setWeightByPounds: this.setWeightByPounds,
         getWeightKilograms: this.getWeightKilograms,
-        setWeightByKilograms: this.setWeightByKilograms
+        setWeightByKilograms: this.setWeightByKilograms,
+        getBMI: this.getBMI
       })
     );
 
