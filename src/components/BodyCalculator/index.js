@@ -2,6 +2,8 @@ import React from "react";
 
 const INCHES_PER_FOOT = 12;
 const CENTIMETERS_PER_INCH = 2.54;
+const GRAMS_PER_POUND = 453.59237;
+const KILOGRAMS_PER_GRAM = 1000;
 
 export default class BodyCalculator extends React.Component {
   constructor() {
@@ -9,7 +11,8 @@ export default class BodyCalculator extends React.Component {
 
     this.state = {
       heightInches: 0,
-      isRounding: true
+      isRounding: true,
+      weightGrams: 0
     };
 
     this.getIsRounding = this.getIsRounding.bind(this);
@@ -22,6 +25,10 @@ export default class BodyCalculator extends React.Component {
     this.setHeightByInchesPart = this.setHeightByInchesPart.bind(this);
     this.setHeightByCentimeters = this.setHeightByCentimeters.bind(this);
     this.setIsRounding = this.setIsRounding.bind(this);
+    this.getWeightPounds = this.getWeightPounds.bind(this);
+    this.setWeightByPounds = this.setWeightByPounds.bind(this);
+    this.getWeightKilograms = this.getWeightKilograms.bind(this);
+    this.setWeightByKilograms = this.setWeightByKilograms.bind(this);
   }
 
   getHeightInches() {
@@ -46,6 +53,16 @@ export default class BodyCalculator extends React.Component {
 
   getIsRounding() {
     return this.state.isRounding;
+  }
+
+  getWeightPounds() {
+    const pounds = this.state.weightGrams / GRAMS_PER_POUND;
+    return this.state.isRounding ? Math.round(pounds) : pounds;
+  }
+
+  getWeightKilograms() {
+    const kilograms = this.state.weightGrams / KILOGRAMS_PER_GRAM;
+    return this.state.isRounding ? Math.round(kilograms) : kilograms;
   }
 
   setHeightInches(inches) {
@@ -93,6 +110,18 @@ export default class BodyCalculator extends React.Component {
     });
   }
 
+  setWeightByPounds(pounds) {
+    this.setState({
+      weightGrams: pounds * GRAMS_PER_POUND
+    });
+  }
+
+  setWeightByKilograms(kilograms) {
+    this.setState({
+      weightGrams: kilograms * KILOGRAMS_PER_GRAM
+    });
+  }
+
   render() {
     const { children } = this.props;
 
@@ -107,7 +136,11 @@ export default class BodyCalculator extends React.Component {
         setHeightByFeetPart: this.setHeightByFeetPart,
         setHeightByInchesPart: this.setHeightByInchesPart,
         setHeightByCentimeters: this.setHeightByCentimeters,
-        setIsRounding: this.setIsRounding
+        setIsRounding: this.setIsRounding,
+        getWeightPounds: this.getWeightPounds,
+        setWeightByPounds: this.setWeightByPounds,
+        getWeightKilograms: this.getWeightKilograms,
+        setWeightByKilograms: this.setWeightByKilograms
       })
     );
 

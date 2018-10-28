@@ -36,19 +36,34 @@ export default class BodyCalculatorPresenter extends React.Component {
     this.props.setIsRounding(isChecked);
   }
 
+  handleChangeWeightPounds(e) {
+    const pounds = e.target.value;
+    if (isNumber(pounds)) {
+      this.props.setWeightByPounds(+pounds);
+    }
+  }
+
+  handleChangeWeightKilograms(e) {
+    const kilograms = e.target.value;
+    if (isNumber(kilograms)) {
+      this.props.setWeightByKilograms(+kilograms);
+    }
+  }
+
   render() {
     const {
       getIsRounding,
       getHeightInches,
       getHeightCentimeters,
       getHeightFeetPart,
-      getHeightInchesPart
+      getHeightInchesPart,
+      getWeightPounds,
+      getWeightKilograms
     } = this.props;
 
     return (
       <div className="App">
         <h1>Body Calculator</h1>
-        <h2>Height</h2>
         <div>
           <input
             type="checkbox"
@@ -57,6 +72,8 @@ export default class BodyCalculatorPresenter extends React.Component {
           />{" "}
           Round
         </div>
+
+        <h2>Height</h2>
         <table style={{ display: "inline-table" }}>
           <tbody>
             <tr>
@@ -101,6 +118,34 @@ export default class BodyCalculatorPresenter extends React.Component {
                 <span>"</span>
               </td>
               <td />
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Weight</h2>
+        <table style={{ display: "inline-table" }}>
+          <tbody>
+            <tr>
+              <td>
+                <input
+                  value={getWeightPounds()}
+                  onChange={e => {
+                    this.handleChangeWeightPounds(e);
+                  }}
+                  size={5}
+                />
+                <span> lbs</span>
+              </td>
+              <td>
+                <input
+                  value={getWeightKilograms()}
+                  onChange={e => {
+                    this.handleChangeWeightKilograms(e);
+                  }}
+                  size={5}
+                />
+                <span> kg</span>
+              </td>
             </tr>
           </tbody>
         </table>
